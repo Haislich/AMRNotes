@@ -148,3 +148,76 @@ These coordinates generalize the description of the robot’s motion, meaning th
     Now, if we assume we have a spatial manipulator, we have $6N$ parameters, of which $3N$ describe the position and $3N$ describe the rotation.
     For everything we said until now, this representation is not minimal, and due to the presence of joints there are $5N$ constraints, which means that we can treat the spatial manipulator as a planar manipulator.
 \end{example}
+
+
+\begin{definition}
+    Topology is the study of the fundamental structure and properties of spaces that remain the same even when those spaces are continuously deformed. Topology ignores exact distances or angles and focuses instead on properties like connectedness or the number of holes in a space.
+\end{definition}
+
+In robotics, topology becomes crucial when we deal with the robot’s configuration space
+The topology of C-space helps us understand whether the robot can smoothly move from one configuration to another without colliding with obstacles. It tells us about the overall shape and connectedness of C-space. Understanding the topology helps in tasks like: motion planning and obstacle avoidance.
+
+Euclidean space is the regular, flat space we’re used to, where distances, angles, and straight lines behave as expected. However, C-space is generally not Euclidean because it doesn't behave like a flat, regular space, in fact it can assume values in $SO(2)$, which is not closed under the sum. In non-Euclidean spaces, distances and paths behave differently.
+
+\begin{example}
+    Assume you have a manipulator with two links
+
+    \begin{center}
+        \includegraphics{Configuration space/2R_manipulator.png}
+    \end{center}
+
+    Here we have:
+
+    $$
+        \bm{q} = \begin{pmatrix}
+            q_1 \\
+            q2
+        \end{pmatrix} \ , \ \mathbf{C} = SO(2) \times SO(2)
+    $$
+
+    Now a naive representation of the configuration space would be:
+
+    \begin{center}
+        \includegraphics{Configuration space/naive_2R_configuration.png}
+    \end{center}
+
+    The first thing, that we notice is that this configuration space is not injective.
+    Assume for example that we make a full rotation, around the first axis, the robot will return to the same position, but the configuration will be different:
+
+    \begin{center}
+        \includegraphics{Configuration space/naive_2R_configuration_non_injectivity.png}
+    \end{center}
+
+    In general in fact there will be an infinite values of configurations that in the configuration space describe the same configuration in the working space.
+
+    Now, to solve this we can limit the admissibile values that both $q_1$ and $q_2$ can assume, such that $q_1, \ q_2 \ \in [0,2\pi)$
+
+    \begin{center}
+        \includegraphics{Configuration space/naive_2R_configuration_injectivity.png}
+    \end{center}
+
+    Now, the injectivity problem is solved, however a new problem appears:
+    Assume you have two different configurations $q_A = (\epsilon,\pi)$ and $q_B = (2\pi-\epsilon,\pi)$
+
+    \begin{center}
+        \includegraphics{Configuration space/naive_2R_configuration_distance.png}
+    \end{center}
+
+    In the configuration space they seem to be distant, however in the workspace, they appear to be very similar, and thus the distance should be low:
+
+    \begin{center}
+        \includegraphics{Configuration space/naive_2R_workspace_distance.png}
+    \end{center}
+
+    The problem is, as previously mentioned, that the configuration space is in general not Euclidean.
+
+    We can solve by transforming the admissible zone for the configuration values from a rectangle into a torus
+
+    \begin{center}
+        \includegraphics[width=16cm]{Configuration space/rect_to_torus.png}
+    \end{center}
+
+    The toroidal configuration space naturally handles the wrap-around behaviors, solving the distance problem.
+    A torus is a manifold, which means that locally behaves like the Euclidean space.
+    A practical example is the earth, is sperical but locally seems flat.
+\end{example}
