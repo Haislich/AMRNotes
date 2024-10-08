@@ -221,3 +221,79 @@ Euclidean space is the regular, flat space we’re used to, where distances, ang
     A torus is a manifold, which means that locally behaves like the Euclidean space.
     A practical example is the earth, is sperical but locally seems flat.
 \end{example}
+
+In general the the configuration space $\mathbf{C}$ is a manifold and only locally presents a Euclidean structure.
+
+We want however, to be able to express the notion of distance, because it reflects some information about similarity of configurations.
+
+\begin{definition}
+    A distance $d$ is a valid mathematical function if it has this properties:
+    \begin{itemize}
+        \item $d(q_a,q_b) \geq 0$
+        \item  $d(q_a,q_b) = 0$ iff $q_a = q_b$
+        \item $d(q_a,q_b) = d(q_b,q_a)$
+        \item $d(q_a,q_b) \leq d(q_a,q_c) + d(q_c,q_b)$
+    \end{itemize}
+\end{definition}
+
+\begin{warningbox}[Warning]
+    Why would we need to define a distance and not just use the euclidean distance ?
+
+    When we talk about Euclidean distance between two points, we're referring to the straight-line (or shortest possible) distance between those points in 3D space.
+    Imagine we have a configuration space which has the following form:
+
+    \begin{center}
+        \includegraphics{Configuration space/surface.png}
+    \end{center}
+
+    Now assume that we have two configurations $q_a$ and $q_b$, a practical way to see why the euclidean distance is not a good distance is by visualizing.
+
+    \begin{center}
+        \includegraphics{Configuration space/distance_on_a_manifold.png}
+    \end{center}
+
+    The euclidean distance is calculated without accounting for the underlying structure of the configuration space itself.
+    While the Euclidean distance may suggest that the configurations are relatively similar due to their proximity in 3D space, it doesn't fully capture the reality of the system's constraints or the manifold the system exists on.
+
+    A more accurate measure of distance within configuration space is the geodesic, which is the shortest path along the curved surface connecting $q_a$ and $q_b$. In this case the geodesic distance indicates that the two configurations are actually quite dissimilar when considering the actual path the system would need to take to move between them.
+
+
+
+\end{warningbox}
+
+While geodesics provide a more reliable representation of distance in configuration space, they are generally more difficult to compute, especially in higher-dimensional spaces or when the surface is complex.
+In general the displacement metric is used instead.
+
+\begin{definition}
+    Given a point $p$ on the robot and $p(\bm{q})$ the position of point $p$ in configuration $\bm{q}$, the displacement metric is the following distance:
+
+    $$
+        d(q_a,q_b) = \underset{p \in robot}{max} ||p(a_a) - p(q_b)||
+    $$
+\end{definition}
+
+The displacement metric is essentially the maximum distance of all the points between two different configurations.
+
+\begin{tipbox}
+    We have moved the definition of distance from the configuration space to the workspace, which is an euclidean space and the euclidean distance is well defined.
+\end{tipbox}
+
+A good way to understand the displacement metric is to visualize it
+
+\begin{center}
+    \includegraphics[width = 15cm]{Configuration space/ok_displacement_metric.png}
+\end{center}
+
+An obvious problem with this approach is the fact that we want to determine the maximum in a set of infinite pairs, which means that when implementing it in a software we should need to do an infinite number of computations.
+
+To solve this issue we can focus on just $N$ points called central points, predefined and which reduces the infinity of points to a finite number.
+
+Another problem is the fact that the $max$ is not differentiable, and thus we cannot optimize, it, so instead, to solve both problems we give a new mathematical formulation for the displacement metric:
+
+$$
+    d'(a_a,q_b) = \sum_{i=1}^N || p_i(q_a) - p_i(q_b)||
+$$
+
+\begin{warningbox}
+    By leveraging the fact that locally the manifold behaves like an euclidean space we can use the euclidean distance if the points are known to be close.
+\end{warningbox}
